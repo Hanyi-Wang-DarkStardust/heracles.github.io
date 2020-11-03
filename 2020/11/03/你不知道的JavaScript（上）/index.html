@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>你不知道的JavaScript（上） | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="第三章：函数作用域和块作用域函数作用域函数是最常见的Javascript作用域单元。函数作用域的含义是指，属于这个函数的全部变量都可以在整个函数的范围内使用以及复用（在嵌套作用域中也可以使用）。例如： 123456789function foo(a) &amp;#123;    var b &#x3D; 2;    &#x2F;&#x2F; some code    function bar() &amp;#12">
+<meta property="og:type" content="article">
+<meta property="og:title" content="你不知道的JavaScript（上）">
+<meta property="og:url" content="http://example.com/2020/11/03/%E4%BD%A0%E4%B8%8D%E7%9F%A5%E9%81%93%E7%9A%84JavaScript%EF%BC%88%E4%B8%8A%EF%BC%89/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="第三章：函数作用域和块作用域函数作用域函数是最常见的Javascript作用域单元。函数作用域的含义是指，属于这个函数的全部变量都可以在整个函数的范围内使用以及复用（在嵌套作用域中也可以使用）。例如： 123456789function foo(a) &amp;#123;    var b &#x3D; 2;    &#x2F;&#x2F; some code    function bar() &amp;#12">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-11-03T01:59:35.000Z">
+<meta property="article:modified_time" content="2020-11-03T02:00:40.878Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-你不知道的JavaScript（上）" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/11/03/%E4%BD%A0%E4%B8%8D%E7%9F%A5%E9%81%93%E7%9A%84JavaScript%EF%BC%88%E4%B8%8A%EF%BC%89/" class="article-date">
+  <time datetime="2020-11-03T01:59:35.000Z" itemprop="datePublished">2020-11-03</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      你不知道的JavaScript（上）
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="第三章：函数作用域和块作用域"><a href="#第三章：函数作用域和块作用域" class="headerlink" title="第三章：函数作用域和块作用域"></a>第三章：函数作用域和块作用域</h2><h3 id="函数作用域"><a href="#函数作用域" class="headerlink" title="函数作用域"></a>函数作用域</h3><p>函数是最常见的Javascript作用域单元。函数作用域的含义是指，属于这个函数的全部变量都可以在整个函数的范围内使用以及复用（在嵌套作用域中也可以使用）。<br>例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">function foo(a) &#123;</span><br><span class="line">    var b &#x3D; 2;</span><br><span class="line">    &#x2F;&#x2F; some code</span><br><span class="line">    function bar() &#123;</span><br><span class="line">        &#x2F;&#x2F; some code</span><br><span class="line">    &#125;</span><br><span class="line">    &#x2F;&#x2F; more code</span><br><span class="line">    var c &#x3D; 3;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>由于标识符a，b，c，bar都属于foo的作用域气泡，因此无法从foo外部进行访问，但是bar内部可以访问。</p>
+<p>最小暴露原则：在软件设计中，应当最小限度地暴露必要内容，而将其他内容隐藏起来。如定义内部函数等。</p>
+<ul>
+<li>好处：避免同名标识符之间的冲突。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">function foo() &#123;</span><br><span class="line">    function bar() &#123;</span><br><span class="line">        i &#x3D; 3;  &#x2F;&#x2F; this modifies the &quot;i&quot; in outer space</span><br><span class="line">        console.log(a + i);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    for (var i &#x3D; 0; i &lt; 10; i++) &#123;</span><br><span class="line">        bar(i * 2); &#x2F;&#x2F; infinite loop</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+此外，通过函数代码块的形式来包装函数，会产生额外的问题：1）必须声明一个具名函数，意味着这个函数本身<br>污染了所在作用域（即在作用域中添加了或许不必要的标识符）。2）必须显式地通过函数名来调用这个函数。</li>
+</ul>
+<p>为了解决这一问题，Javascript提供了包装函数的形式来将函数当作函数表达式来处理。包装函数以(function…开始，<br>如<code>（function foo()&#123;...&#125;)()</code>，这个foo表达式只能在<code>...</code>所在区域被访问，其他则不行。</p>
+<h4 id="匿名和具名"><a href="#匿名和具名" class="headerlink" title="匿名和具名"></a>匿名和具名</h4><ul>
+<li>具名表达式：有函数标识符的表达式</li>
+<li>匿名表达式：没有函数标识符的表达式<ul>
+<li>缺点：<ul>
+<li>没有显式的函数名，难以调试。</li>
+<li>可读性差。</li>
+<li>如果没有函数名，在例如递归的场景时只能使用已经过期的arguments.callee调用</li>
+</ul>
+</li>
+<li>可使用行内函数表达式来替代</li>
+</ul>
+</li>
+</ul>
+<h4 id="IIFE-–-立即执行函数表达式"><a href="#IIFE-–-立即执行函数表达式" class="headerlink" title="IIFE – 立即执行函数表达式"></a>IIFE – 立即执行函数表达式</h4><p>IIFE即将定义后的函数用外扩号扩起，后面直接接()来表示调用。同时，后面也可以接(arg)来传入参数。主要意义有：</p>
+<ul>
+<li>可以让函数的使用更加清晰，可读性更高。比如如果需要调用<code>window</code>的属性，使用<code>global</code>作为函数形参，<code>window</code>作为实参的可读性其实更好。</li>
+<li>可以解决一些reserved word被错误覆盖的场景：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">undefined &#x3D; true &#x2F;&#x2F; 错误地将undefined赋值了！</span><br><span class="line">(function foo(undefined) &#123;</span><br><span class="line">    var a;</span><br><span class="line">    if (a &#x3D;&#x3D;&#x3D; undefined) &#123;</span><br><span class="line">        console.log(&quot;Undefined is safe here&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<h3 id="块作用域"><a href="#块作用域" class="headerlink" title="块作用域"></a>块作用域</h3><p>类似for循环，if条件判断语句中的语法块，都属于块作用域。比如在for循环中定义的变量，仅可见于该块作用域。</p>
+<h4 id="with"><a href="#with" class="headerlink" title="with"></a>with</h4><p>with语句将一个对象转换为作用域，将代码块中的变量仅仅限定于该对象中。他创建出来的作用域仅在with中有效。</p>
+<h4 id="try-catch"><a href="#try-catch" class="headerlink" title="try/catch"></a>try/catch</h4><p>catch块中的err，如果在别的地方引用他，就会出现ReferenceError错误。</p>
+<h4 id="let"><a href="#let" class="headerlink" title="let"></a>let</h4><p>使用var声明的变量，其作用域为该语句所在的函数内，且存在变量提升现象；<br>使用let声明的变量，其作用域为该语句所在的代码块内，不存在变量提升。</p>
+<ul>
+<li><p>垃圾收集：块作用域与闭包以及垃圾回收有关。比如有一个占内存很大的变量a，如果我们在使用a的代码区域显式地用代码块扩住，<br>那么在代码块运行完成后就会被垃圾回收掉；如果不这样做，可能某个函数形成了一个覆盖整个作用域的闭包，则Javascript引擎依然很可能不会GC掉它。</p>
+</li>
+<li><p>let循环：let来代替var用作for循环的意义在于，它不仅将循环变量i绑定到for循环块中，实际上也重新绑定到了循环的每一个迭代中，<br>确保使用上一个循环结束时的值进行重新赋值。以下例子便于理解：</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">for(var i &#x3D; 1;i&lt;&#x3D;3;i++)&#123;    &#x2F;&#x2F; 作为对比：var替换为let</span><br><span class="line">　　setTimeout(function()&#123;</span><br><span class="line">　　　　console.log(&#39;for——var&#39;,i);</span><br><span class="line">　　&#125;,1000)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上述代码运行结果为<code>for-var4; for-var4; for-var4</code>，如果用let，则为<code>for-var1; for-var2; for-var3</code>。这是因为let与当前作用域绑定，<br>并且保证上一循环结束时重新赋值，所以在经过1s以后i会正常地自增。而var是全局绑定，i=4的时候，全局中的i已经自增为4了，虽然该条件下的定时器函数不会执行，<br>但是定时器函数可以访问到全局的变量 i。</p>
+<h4 id="const"><a href="#const" class="headerlink" title="const"></a>const</h4><p>同样可以创建块作用域变量，但不可更改。</p>
+<h2 id="提升"><a href="#提升" class="headerlink" title="提升"></a>提升</h2><p><code>var a = 2</code>这行代码其实包含了1）声明：<code>var a</code>，2）赋值：<code>a = 2</code>。前者于编译阶段完成，后者于引擎执行阶段完成。<br>提升就是变量和函数<strong>声明</strong>从它们代码出现位置被”移动”到了最上面。换句话说，对于一个赋值语句，应该是先声明，后赋值。</p>
+<p>此外，要注意每个作用域都会在编译阶段进行提升操作。另外，只有函数声明会被提升，函数表达式、赋值操作等都不会被提升。</p>
+<p>最后，函数声明和变量声明都会被提升，但是函数声明首先被提升，其次是变量声明。（即如果出现重复声明，函数会覆盖变量）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">foo();  &#x2F;&#x2F; output: 1</span><br><span class="line"></span><br><span class="line">var foo;</span><br><span class="line"></span><br><span class="line">function foo() &#123; console.log(1); &#125;</span><br><span class="line"></span><br><span class="line">foo &#x3D; function() &#123; console.log(2); &#125;</span><br></pre></td></tr></table></figure>
+<p>上述代码将输出1而非2，是因为它会被引擎理解为如下形式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function foo() &#123; console.log(1); &#125;</span><br><span class="line"></span><br><span class="line">foo();  &#x2F;&#x2F; output: 1</span><br><span class="line"></span><br><span class="line">foo &#x3D; function() &#123; console.log(2); &#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意，<code>var foo</code>尽管出现在<code>function foo()...</code>的声明之前，但它是重复的声明(因此被忽略了)，因为函数声明会被提升到普通变量前面。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2020/11/03/%E4%BD%A0%E4%B8%8D%E7%9F%A5%E9%81%93%E7%9A%84JavaScript%EF%BC%88%E4%B8%8A%EF%BC%89/" data-id="ckh1bsiqk0000hyiq09iqe8n9" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2020/11/03/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Hello World</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/11/03/%E4%BD%A0%E4%B8%8D%E7%9F%A5%E9%81%93%E7%9A%84JavaScript%EF%BC%88%E4%B8%8A%EF%BC%89/">你不知道的JavaScript（上）</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/03/hello-world/">Hello World</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
