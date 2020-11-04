@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>你不知道的JavaScript（上）：this和对象原型 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="第一章：关于this为什么要用thisthis的主要功能是提高代码复用性，在很多情况下可以隐式”传递”一个对象引用。随着代码的越来越复杂，显式传递上下文对象会让代码变得混乱。 关于this的一些误解1. this是指向自身的1234567891011121314151617181920212223function foo(num) &amp;#123;         console.log( &amp;quot">
+<meta property="og:type" content="article">
+<meta property="og:title" content="你不知道的JavaScript（上）：this和对象原型">
+<meta property="og:url" content="http://example.com/2020/11/04/%E4%BD%A0%E4%B8%8D%E7%9F%A5%E9%81%93%E7%9A%84JavaScript%EF%BC%88%E4%B8%8A%EF%BC%89%EF%BC%9Athis%E5%92%8C%E5%AF%B9%E8%B1%A1%E5%8E%9F%E5%9E%8B/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="第一章：关于this为什么要用thisthis的主要功能是提高代码复用性，在很多情况下可以隐式”传递”一个对象引用。随着代码的越来越复杂，显式传递上下文对象会让代码变得混乱。 关于this的一些误解1. this是指向自身的1234567891011121314151617181920212223function foo(num) &amp;#123;         console.log( &amp;quot">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-11-04T13:37:32.000Z">
+<meta property="article:modified_time" content="2020-11-04T14:05:02.206Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-你不知道的JavaScript（上）：this和对象原型" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/11/04/%E4%BD%A0%E4%B8%8D%E7%9F%A5%E9%81%93%E7%9A%84JavaScript%EF%BC%88%E4%B8%8A%EF%BC%89%EF%BC%9Athis%E5%92%8C%E5%AF%B9%E8%B1%A1%E5%8E%9F%E5%9E%8B/" class="article-date">
+  <time datetime="2020-11-04T13:37:32.000Z" itemprop="datePublished">2020-11-04</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      你不知道的JavaScript（上）：this和对象原型
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="第一章：关于this"><a href="#第一章：关于this" class="headerlink" title="第一章：关于this"></a>第一章：关于this</h2><h3 id="为什么要用this"><a href="#为什么要用this" class="headerlink" title="为什么要用this"></a>为什么要用this</h3><p>this的主要功能是提高代码复用性，在很多情况下可以隐式”传递”一个对象引用。随着代码的越来越复杂，显式传递上下文对象会让代码变得混乱。</p>
+<h3 id="关于this的一些误解"><a href="#关于this的一些误解" class="headerlink" title="关于this的一些误解"></a>关于this的一些误解</h3><h4 id="1-this是指向自身的"><a href="#1-this是指向自身的" class="headerlink" title="1. this是指向自身的"></a>1. this是指向自身的</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">function foo(num) &#123;</span><br><span class="line">         console.log( &quot;foo: &quot; + num );</span><br><span class="line">        &#x2F;&#x2F; 记录 foo 被调用的次数</span><br><span class="line">        this.count++; </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">foo.count &#x3D; 0;</span><br><span class="line"></span><br><span class="line">var i;</span><br><span class="line"></span><br><span class="line">for (i&#x3D;0; i&lt;10; i++) &#123; </span><br><span class="line">    if (i &gt; 5) &#123;</span><br><span class="line">        foo( i ); </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; foo: 6</span><br><span class="line">&#x2F;&#x2F; foo: 7</span><br><span class="line">&#x2F;&#x2F; foo: 8</span><br><span class="line">&#x2F;&#x2F; foo: 9</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; foo 被调用了多少次?</span><br><span class="line">console.log( foo.count ); &#x2F;&#x2F; 0 -- WTF?</span><br></pre></td></tr></table></figure>
+
+<p>当执行<code>foo.count = 0</code>时，的确向<code>foo</code>函数对象添加了一个<code>count</code>属性。但是函数代码中<code>this.count</code>中的this并不是指向那个函数对象。<br>虽然属性名相同，根对象却不相同。这段代码其实是无意中创建了一个全局变量<code>count</code>，它的值是<code>Nan</code>。</p>
+<p>想要从函数对象内部引用它自身，那只使用this是不够的，一般来说需要一个指向函数对象的变量来引用它：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">function foo(num) &#123;</span><br><span class="line">    console.log( &quot;foo: &quot; + num );</span><br><span class="line">    &#x2F;&#x2F; 记录 foo 被调用的次数</span><br><span class="line">    foo.count++;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">console.log( foo.count ); &#x2F;&#x2F; 4</span><br></pre></td></tr></table></figure>
+
+<p>上述代码用foo变量来引用了函数对象自己。但是这种做法使用的是词法作用域，如果想用this，可以更改调用方式为：（原理后续介绍）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">function foo(num) &#123;</span><br><span class="line">    console.log( &quot;foo: &quot; + num );</span><br><span class="line">    &#x2F;&#x2F; 记录 foo 被调用的次数</span><br><span class="line">    foo.count++;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">foo.count &#x3D; 0;</span><br><span class="line"></span><br><span class="line">for (var i&#x3D;0; i&lt;10; i++) &#123; </span><br><span class="line">    if (i &gt; 5) &#123;</span><br><span class="line">        &#x2F;&#x2F; 使用 call(..) 可以确保 this 指向函数对象 foo 本身</span><br><span class="line">        foo.call( foo, i );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">console.log( foo.count ); &#x2F;&#x2F; 4</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-this的作用域指向词法作用域"><a href="#2-this的作用域指向词法作用域" class="headerlink" title="2. this的作用域指向词法作用域"></a>2. <code>this</code>的作用域指向词法作用域</h4><p><code>this</code>在任何情况下都不指向函数的词法作用域，作用域和对象类似，里面的可见标识符都是它的属性，但是作用域”对象”无法通过JavaScript代码访问，因为存在在引擎内部。<br><code>this</code>和词法作用域的查找无法混合使用。</p>
+<h3 id="this是什么"><a href="#this是什么" class="headerlink" title="this是什么"></a><code>this</code>是什么</h3><p><code>this</code>既不指向自身，也不指向函数的词法作用域。<code>this</code>实际上是在函数被调用时发生的绑定，它指向什么完全取决于函数在哪里被调用。当函数被调用时，会创造一个活动记录（执行上下文）。<br>这个记录包括了函数在哪里被调用（调用栈）、函数的调用方法、传入参数等。this就是其中的一个属性。</p>
+<h2 id="第二章：this全面解析"><a href="#第二章：this全面解析" class="headerlink" title="第二章：this全面解析"></a>第二章：this全面解析</h2>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2020/11/04/%E4%BD%A0%E4%B8%8D%E7%9F%A5%E9%81%93%E7%9A%84JavaScript%EF%BC%88%E4%B8%8A%EF%BC%89%EF%BC%9Athis%E5%92%8C%E5%AF%B9%E8%B1%A1%E5%8E%9F%E5%9E%8B/" data-id="ckh3h42ox0000tps86rybcc60" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2020/11/03/%E4%BD%A0%E4%B8%8D%E7%9F%A5%E9%81%93%E7%9A%84JavaScript%EF%BC%88%E4%B8%8A%EF%BC%89%EF%BC%9A%E4%BD%9C%E7%94%A8%E5%9F%9F%E4%B8%8E%E9%97%AD%E5%8C%85/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">你不知道的JavaScript（上）</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/11/04/%E4%BD%A0%E4%B8%8D%E7%9F%A5%E9%81%93%E7%9A%84JavaScript%EF%BC%88%E4%B8%8A%EF%BC%89%EF%BC%9Athis%E5%92%8C%E5%AF%B9%E8%B1%A1%E5%8E%9F%E5%9E%8B/">你不知道的JavaScript（上）：this和对象原型</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/03/%E4%BD%A0%E4%B8%8D%E7%9F%A5%E9%81%93%E7%9A%84JavaScript%EF%BC%88%E4%B8%8A%EF%BC%89%EF%BC%9A%E4%BD%9C%E7%94%A8%E5%9F%9F%E4%B8%8E%E9%97%AD%E5%8C%85/">你不知道的JavaScript（上）</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/03/hello-world/">Hello World</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
